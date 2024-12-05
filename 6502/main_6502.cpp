@@ -1,11 +1,17 @@
 #include <iostream>
 using namespace std;
 
+using Byte = unsigned char;
+using Word = unsigned short;
+
+struct Mem 
+{
+
+};
+
 struct CPU
 {
-    using Byte = unsigned char;
-    using Word = unsigned short;
-
+    
     Word PC;           //program counter
     Word SP;          //stack pointer
 
