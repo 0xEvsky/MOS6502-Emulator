@@ -1,4 +1,4 @@
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
 using Byte = unsigned char;
@@ -6,12 +6,39 @@ using Word = unsigned short;
 
 struct Mem 
 {
+    vector<Byte> Data;
 
+    Mem() : Data(1024 * 64, 0) {}
+    
+    bool Validate(Word addr);
+    Byte Read(Word addr);
+    void Write(Word addr, Byte value);
+    void LoadProgram(Word start_addr, const Byte* program, int size);
+    void Reset();
 };
+
+bool Mem::Validate(Word addr) {return addr > 0x0000 && addr < 0xFFFF;}
+Byte Mem::Read(Word addr) {
+    if (Validate(addr))
+        return Data[addr]; 
+}
+
+void Mem::Write(Word addr, Byte value) { 
+    if (Validate(addr))
+        Data[addr] = value; 
+}
+
+void Mem::LoadProgram(Word start_addr, const Byte* program, int size) {
+    for (int i = 0; i < size; ++i) {
+        Data[start_addr + i] = program[i];
+    }
+}
+
+void Mem::Reset() {fill(Data.begin(), Data.end(), 0);}
+
 
 struct CPU
 {
-    
     Word PC;           //program counter
     Word SP;          //stack pointer
 
