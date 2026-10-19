@@ -3,6 +3,8 @@
 #include "memory.h"
 #include "types.h"
 
+enum class Mode;
+
 struct CPU
 {
     Mem mem;
