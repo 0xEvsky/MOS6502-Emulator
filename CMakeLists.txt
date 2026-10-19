@@ -30,6 +30,7 @@ FetchContent_MakeAvailable(googletest)
 # The test program
 add_executable(tests
     tests/test_memory.cpp
+    tests/test_cpu.cpp
 )
 target_link_libraries(tests PRIVATE core GTest::gtest_main)
 

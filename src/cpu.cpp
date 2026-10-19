@@ -9,10 +9,13 @@ void CPU::reset()                             //method to mimic the resetting pr
     A = X = Y = 0;                    //registers are empty
 }
 
-Byte CPU::fetch_byte() {return mem.read(PC++);}
+Byte CPU::mem_read(Word addr) {return mem.read(addr);}
+void CPU::mem_write(Word addr, Byte data) {mem.write(addr, data);}
+
+Byte CPU::fetch_byte() {return mem_read(PC++);}
 Word CPU::fetch_word() {
-    Byte low = this->mem.read(PC++);
-    Word high = this->mem.read(PC++);
+    Byte low = mem_read(PC++);
+    Word high = mem_read(PC++);
     high <<= 8; // Shift the high byte to the left by 8 bits
     Word addr = high | low; // Combine the high and low bytes to form the address
     return addr;

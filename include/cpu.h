@@ -23,6 +23,8 @@ struct CPU
     Byte N : 1;
 
     // helpers
+    Byte mem_read(Word addr);
+    void mem_write(Word addr, Byte data);
     Byte fetch_byte();
     Word fetch_word();
     Word resolve_addr(Mode m);
