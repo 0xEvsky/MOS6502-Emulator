@@ -1,5 +1,5 @@
-#include "cpu.h"
-#include "instructions.h"
+#include "../include/cpu.h"
+#include "../include/instructions.h"
 
 void CPU::reset()                             //method to mimic the resetting proccess
 {
@@ -9,24 +9,29 @@ void CPU::reset()                             //method to mimic the resetting pr
     A = X = Y = 0;                    //registers are empty
 }
 
+Byte CPU::fetch_byte() {return mem.read(PC++);}
+Word CPU::fetch_word() {
+    Byte low = this->mem.read(PC++);
+    Word high = this->mem.read(PC++);
+    high <<= 8; // Shift the high byte to the left by 8 bits
+    Word addr = high | low; // Combine the high and low bytes to form the address
+    return addr;
+}
+
 Byte CPU::fetch() {
-    Byte opcode = mem.read(PC++);
+    Byte opcode = fetch_byte();
     return opcode;
 }
 
 Word CPU::resolve_addr(Mode m) {
     switch (m) {
         case (Mode::Immediate): return PC++;
-        case (Mode::ZeroPage): return this->mem.read(PC++);
-        case (Mode::ZeroPageX): return Byte(this->mem.read(PC++) + X);
-        case (Mode::ZeroPageY): return Byte(this->mem.read(PC++) + Y);
-        case (Mode::Absolute): {
-            Byte high = this->mem.read(PC++);
-            high <<= 8; // Shift the high byte to the left by 8 bits
-            Byte low = this->mem.read(PC++);
-            Word addr = high | low; // Combine the high and low bytes to form the address
-            return addr;
-        }
+        case (Mode::ZeroPage): return fetch_byte();
+        case (Mode::ZeroPageX): return Byte(fetch_byte() + X);
+        case (Mode::ZeroPageY): return Byte(fetch_byte() + Y);
+        case (Mode::Absolute): return fetch_word();
+        case (Mode::AbsoluteX): return fetch_word() + X;
+        case (Mode::AbsoluteY): return fetch_word() + Y;
 
     default:
         return 0x0000;

@@ -9,9 +9,9 @@ struct Mem
 
     Mem() : data(1024 * 64, 0) {}
 
-    bool validate(Word addr);
+    size_t size();
     Byte read(Word addr);
     void write(Word addr, Byte value);
-    void loadProgram(Word start_addr, const Byte* program, int size);
+    void load(Word start_addr, const Byte* program, size_t size);
     void reset();
 };
