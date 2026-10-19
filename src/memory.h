@@ -5,13 +5,13 @@
 
 struct Mem
 {
-    std::vector<Byte> Data;
+    std::vector<Byte> data;
 
-    Mem() : Data(1024 * 64, 0) {}
+    Mem() : data(1024 * 64, 0) {}
 
-    bool Validate(Word addr);
-    Byte Read(Word addr);
-    void Write(Word addr, Byte value);
-    void LoadProgram(Word start_addr, const Byte* program, int size);
-    void Reset();
+    bool validate(Word addr);
+    Byte read(Word addr);
+    void write(Word addr, Byte value);
+    void loadProgram(Word start_addr, const Byte* program, int size);
+    void reset();
 };

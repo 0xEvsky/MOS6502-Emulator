@@ -20,7 +20,8 @@ struct CPU
     Byte V : 1;
     Byte N : 1;
 
-    void Reset();
-    Byte Fetch();
-    void Execute(Byte opcode);
+    void reset();
+    Byte fetch();
+    Word resolve_addr(Mode m);
+    void execute(Byte opcode);
 };
