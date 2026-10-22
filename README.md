@@ -104,10 +104,8 @@ After execution, the accumulator contains `0x42`, assuming the CPU's program cou
 
 ## References
 
-- [6502.org — Technical resources](https://www.6502.org/)
-- [NESdev Wiki — 6502 instruction reference](https://www.nesdev.org/wiki/CPU)
-- [6502 Opcode Reference](https://www.masswerk.at/6502/6502_instruction_set.html)
-
+- [6502.org](https://www.6502.org/)
+- [pagetable.com - 6502 Family CPU Reference](https://www.pagetable.com/c64ref/6502/?tab=2)
 ---
 
 This project is intended for educational purposes and is under active development. It does not yet implement the complete 6502 instruction set or cycle-accurate CPU behavior.
