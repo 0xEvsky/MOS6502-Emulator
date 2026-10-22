@@ -6,17 +6,20 @@ This project is a learning-oriented implementation of the 6502 microprocessor, f
 
 **Status:** Work in progress.
 
+## Instruction Set Progress
+
+![Instruction Progress](https://progress-bar.xyz/7/?title=Instruction%20Coverage&width=400&color=22c55e)
+
+**4 / 56 official instruction mnemonics implemented (7%)**
+
+Progress is currently tracked by implemented instruction mnemonics. The goal is to implement all 56 official NMOS 6502 instruction types. This does not yet measure addressing-mode completeness, cycle accuracy, or overall emulator correctness.
+
 ## Features
 
 - **CPU core:** Program counter, stack pointer, accumulator, X and Y index registers, and processor status flags.
 - **Memory:** Memory read/write operations and byte/word fetching.
 - **Instruction decoding:** Opcode lookup using a 256-entry instruction table.
 - **Addressing modes:** Immediate, zero page, zero-page indexed, absolute, absolute indexed, indexed indirect, and indirect indexed.
-- **Implemented instructions:**
-  - `LDA` — Load Accumulator
-  - `LDX` — Load X Register
-  - `LDY` — Load Y Register
-  - `STA` — Store Accumulator
 - **Testing:** GoogleTest unit tests covering memory, CPU behavior, and instruction addressing modes.
 - **Build system:** CMake with C++17.
 
@@ -27,7 +30,7 @@ This project is a learning-oriented implementation of the 6502 microprocessor, f
 - A C++17-compatible compiler
 - CMake 3.14 or later
 - Git
-- Internet access during the initial CMake configuration to download GoogleTest
+- Internet access during initial CMake configuration to download GoogleTest
 
 ### Build
 
@@ -85,8 +88,19 @@ cpu.mem_write(0xFFFC, 0x42);
 cpu.execute(0xA9);
 ```
 
-After execution, the accumulator contains `0x42`.
+After execution, the accumulator contains `0x42`, assuming the CPU's program counter is positioned at the immediate operand.
 
+## Development Roadmap
+
+- [x] CPU and memory foundations
+- [x] Instruction lookup and decoding
+- [x] LDA, LDX, LDY, and STA implementations
+- [x] Addressing-mode tests for LDA and STA
+- [ ] Implement remaining official 6502 instructions
+- [ ] Improve processor status flag handling
+- [ ] Add instruction cycle counting and timing accuracy
+- [ ] Implement a program-loading and execution loop
+- [ ] Expand test coverage and validate against established 6502 test suites
 
 ## References
 
@@ -97,4 +111,3 @@ After execution, the accumulator contains `0x42`.
 ---
 
 This project is intended for educational purposes and is under active development. It does not yet implement the complete 6502 instruction set or cycle-accurate CPU behavior.
- 
