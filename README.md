@@ -10,7 +10,7 @@ This project is a learning-oriented implementation of the 6502 microprocessor, f
 
 ![Instruction Progress](assets/instruction-progress.svg)
 
-**11 / 56 official instruction mnemonics implemented (20%)**
+**6 / 56 official instruction mnemonics implemented (11%)**
 
 Progress is currently tracked by implemented instruction mnemonics. The goal is to implement all 56 official NMOS 6502 instruction types. This does not yet measure addressing-mode completeness, cycle accuracy, or overall emulator correctness.
 
