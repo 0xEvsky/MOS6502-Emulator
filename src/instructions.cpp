@@ -12,5 +12,6 @@ void sty(CPU& cpu, Word addr) {cpu.mem_write(addr, cpu.getY());}
 void tax(CPU& cpu, Word) {cpu.setX(cpu.getA());}
 void tay(CPU& cpu, Word) {cpu.setY(cpu.getA());}
 void tsx(CPU& cpu, Word) {cpu.setX(cpu.getSP());}
+void txa(CPU& cpu, Word) {cpu.setA(cpu.getX());}
 void txs(CPU& cpu, Word) {cpu.setSP(cpu.getX());}
 void tya(CPU& cpu, Word) {cpu.setA(cpu.getY());}

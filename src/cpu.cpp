@@ -159,6 +159,7 @@ const Instruction& CPU::decode(Byte opcode) {
         table[0xAA] = {tax, Mode::Implied};
         table[0xA8] = {tay, Mode::Implied};
         table[0xBA] = {tsx, Mode::Implied};
+        table[0x8A] = {txa, Mode::Implied};
         table[0x9A] = {txs, Mode::Implied};
         table[0x98] = {tya, Mode::Implied};
         return table;

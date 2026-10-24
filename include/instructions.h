@@ -21,5 +21,6 @@ void sty(CPU& cpu, Word addr);
 void tax(CPU& cpu, Word);
 void tay(CPU& cpu, Word); 
 void tsx(CPU& cpu, Word);
+void txa(CPU& cpu, Word);
 void txs(CPU& cpu, Word);
 void tya(CPU& cpu, Word);

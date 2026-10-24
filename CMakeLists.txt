@@ -33,6 +33,7 @@ add_executable(tests
     tests/test_cpu.cpp
     tests/test_ld.cpp
     tests/test_st.cpp
+    tests/test_t.cpp
 )
 target_link_libraries(tests PRIVATE core GTest::gtest_main)
 
