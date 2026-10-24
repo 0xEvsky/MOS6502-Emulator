@@ -1,5 +1,5 @@
 
-name: Update Instruction Progress
+name: Test and Update Instruction Progress
 
 on:
   push:
@@ -7,6 +7,9 @@ on:
       - main
     paths:
       - "src/**"
+      - "include/**"
+      - "tests/**"
+      - "CMakeLists.txt"
       - "scripts/update_instruction_progress.py"
       - "README.md"
       - ".github/workflows/update-instruction-progress.yml"
@@ -23,13 +26,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Configure CMake
+        run: cmake -S . -B build
+
+      - name: Build emulator and tests
+        run: cmake --build build --parallel 2
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
 
       - name: Update instruction progress
-        run: python3 scripts/update_instruction_progress.py
+        run: python scripts/update_instruction_progress.py
 
       - name: Commit generated changes
         run: |
