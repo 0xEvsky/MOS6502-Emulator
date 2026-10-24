@@ -154,6 +154,13 @@ const Instruction& CPU::decode(Byte opcode) {
         table[0x84] = {sty, Mode::ZeroPage};
         table[0x94] = {sty, Mode::ZeroPageX};
         table[0x8C] = {sty, Mode::Absolute};
+
+        // T--
+        table[0xAA] = {tax, Mode::Implied};
+        table[0xA8] = {tay, Mode::Implied};
+        table[0xBA] = {tsx, Mode::Implied};
+        table[0x9A] = {txs, Mode::Implied};
+        table[0x98] = {tya, Mode::Implied};
         return table;
     }();
     return instruction_table[opcode];
