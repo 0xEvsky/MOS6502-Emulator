@@ -5,6 +5,7 @@
 #include "types.h"
 
 enum class Mode;
+struct Instruction;
 
 struct CPU
 {
@@ -30,7 +31,7 @@ public:
     Word getPC() const;
     void setPC(Word value);
     Word getSP() const;
-    void setSP(Word value);
+    void setSP(Byte value);
     Byte getA() const;
     void setA(Byte value);
     Byte getX() const;
@@ -56,6 +57,8 @@ public:
     void reset();
     Byte mem_read(Word addr);
     void mem_write(Word addr, Byte data);
+    Byte stack_read();
+    void stack_write(Byte data);
     Byte fetch_byte();
     Word fetch_word();
     Word fetch_indexed_indirect(Byte reg);

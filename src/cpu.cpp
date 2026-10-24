@@ -8,7 +8,7 @@ CPU::CPU()
 Word CPU::getPC() const {return PC;}
 void CPU::setPC(Word value) {PC = value;}
 Word CPU::getSP() const {return SP;}
-void CPU::setSP(Word value) {SP = value;}
+void CPU::setSP(Byte value) {SP = 0x0100 + value;}
 Byte CPU::getA() const {return A;}
 void CPU::setA(Byte value) {A = value;}
 Byte CPU::getX() const {return X;}
@@ -34,7 +34,7 @@ void CPU::setN() {N = !N;}
 void CPU::reset()                             //method to mimic the resetting proccess
 {
     setPC(0xFFFC);
-    setSP(0x0100);                      //the stack beings at 0x01000 in the memory
+    setSP(0x0100);                      //the stack beings at 0x0100 in the memory
     if (getC()) setC();
     if (getZ()) setZ();
     if (getI()) setI();
@@ -49,6 +49,9 @@ void CPU::reset()                             //method to mimic the resetting pr
 
 Byte CPU::mem_read(Word addr) {return mem.read(addr);}
 void CPU::mem_write(Word addr, Byte data) {mem.write(addr, data);}
+
+Byte CPU::stack_read() {return mem_read(getSP());}
+void CPU::stack_write(Byte data) {mem_write(getSP(), data);}
 
 Byte CPU::fetch_byte() {
     Word addr = getPC();
@@ -141,6 +144,16 @@ const Instruction& CPU::decode(Byte opcode) {
         table[0x99] = {sta, Mode::AbsoluteY};
         table[0x81] = {sta, Mode::IndirectPreX};
         table[0x91] = {sta, Mode::IndirectPostY};
+
+        // STX
+        table[0x86] = {stx, Mode::ZeroPage};
+        table[0x96] = {stx, Mode::ZeroPageY};
+        table[0x8E] = {stx, Mode::Absolute};
+
+        // STY
+        table[0x84] = {sty, Mode::ZeroPage};
+        table[0x94] = {sty, Mode::ZeroPageX};
+        table[0x8C] = {sty, Mode::Absolute};
         return table;
     }();
     return instruction_table[opcode];

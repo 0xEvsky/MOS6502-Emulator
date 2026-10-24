@@ -24,7 +24,7 @@ TEST_F(CPUTest, ResetInitializesRegisters) {
 
 TEST_F(CPUTest, AccessorsUpdateRegistersAndFlags) {
     cpu.setPC(0x1234);
-    cpu.setSP(0x5678);
+    cpu.setSP(0x78);
     cpu.setA(0x01);
     cpu.setX(0x02);
     cpu.setY(0x03);
@@ -37,7 +37,7 @@ TEST_F(CPUTest, AccessorsUpdateRegistersAndFlags) {
     cpu.setN();
 
     EXPECT_EQ(cpu.getPC(), 0x1234);
-    EXPECT_EQ(cpu.getSP(), 0x5678);
+    EXPECT_EQ(cpu.getSP(), 0x0178);
     EXPECT_EQ(cpu.getA(), 0x01);
     EXPECT_EQ(cpu.getX(), 0x02);
     EXPECT_EQ(cpu.getY(), 0x03);
