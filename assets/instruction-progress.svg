@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="644" height="184" viewBox="0 0 644 184">
 <rect width="100%" height="100%" rx="8" fill="#ffffff"/>
-<text x="8" y="20" font-family="sans-serif" font-size="14" fill="#24292f">Instruction coverage: 11/56 (20%)</text>
+<text x="8" y="20" font-family="sans-serif" font-size="14" fill="#24292f">Instruction coverage: 12/56 (21%)</text>
 <rect x="3" y="30" width="40" height="28" rx="4" fill="#e5e7eb"/><text x="23" y="48" text-anchor="middle" font-family="monospace" font-size="11" font-weight="600" fill="#374151">ADC</text>
 <rect x="49" y="30" width="40" height="28" rx="4" fill="#e5e7eb"/><text x="69" y="48" text-anchor="middle" font-family="monospace" font-size="11" font-weight="600" fill="#374151">AND</text>
 <rect x="95" y="30" width="40" height="28" rx="4" fill="#e5e7eb"/><text x="115" y="48" text-anchor="middle" font-family="monospace" font-size="11" font-weight="600" fill="#374151">ASL</text>
@@ -54,7 +54,7 @@
 <rect x="371" y="144" width="40" height="28" rx="4" fill="#22c55e"/><text x="391" y="162" text-anchor="middle" font-family="monospace" font-size="11" font-weight="600" fill="#14532d">TAX</text>
 <rect x="417" y="144" width="40" height="28" rx="4" fill="#22c55e"/><text x="437" y="162" text-anchor="middle" font-family="monospace" font-size="11" font-weight="600" fill="#14532d">TAY</text>
 <rect x="463" y="144" width="40" height="28" rx="4" fill="#22c55e"/><text x="483" y="162" text-anchor="middle" font-family="monospace" font-size="11" font-weight="600" fill="#14532d">TSX</text>
-<rect x="509" y="144" width="40" height="28" rx="4" fill="#e5e7eb"/><text x="529" y="162" text-anchor="middle" font-family="monospace" font-size="11" font-weight="600" fill="#374151">TXA</text>
+<rect x="509" y="144" width="40" height="28" rx="4" fill="#22c55e"/><text x="529" y="162" text-anchor="middle" font-family="monospace" font-size="11" font-weight="600" fill="#14532d">TXA</text>
 <rect x="555" y="144" width="40" height="28" rx="4" fill="#22c55e"/><text x="575" y="162" text-anchor="middle" font-family="monospace" font-size="11" font-weight="600" fill="#14532d">TXS</text>
 <rect x="601" y="144" width="40" height="28" rx="4" fill="#22c55e"/><text x="621" y="162" text-anchor="middle" font-family="monospace" font-size="11" font-weight="600" fill="#14532d">TYA</text>
 </svg>
