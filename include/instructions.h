@@ -1,26 +1,32 @@
 #pragma once
 
 #include "types.h"
-#include "cpu.h"
+
+struct CPU;
 
 enum class Mode { Implied, Immediate, ZeroPage, ZeroPageX, ZeroPageY, Absolute, AbsoluteX, AbsoluteY, IndirectPreX, IndirectPostY};
 
-struct Instruction {
-    void (*op)(CPU&, Word addr);   
-    Mode mode;                    
+using RegisterGetter = Byte (CPU::*)() const;
+using RegisterSetter = void (CPU::*)(Byte);
+
+struct InstructionArgs {
+    RegisterGetter getter = nullptr;
+    RegisterSetter setter = nullptr;
 };
 
-void lda(CPU& cpu, Word addr);
-void ldx(CPU& cpu, Word addr);
-void ldy(CPU& cpu, Word addr);
+using InstructionOperation = void (*)(CPU&, Word, const InstructionArgs&);
 
-void sta(CPU& cpu, Word addr);
-void stx(CPU& cpu, Word addr);
-void sty(CPU& cpu, Word addr);
+struct Instruction {
+    InstructionOperation op = nullptr;
+    Mode mode = Mode::Implied;
+    InstructionArgs args;
+};
 
-void tax(CPU& cpu, Word);
-void tay(CPU& cpu, Word); 
-void tsx(CPU& cpu, Word);
-void txa(CPU& cpu, Word);
-void txs(CPU& cpu, Word);
-void tya(CPU& cpu, Word);
+void update_zn_flags(CPU& cpu, Byte value);
+void load(CPU& cpu, Word addr, const InstructionArgs& args);
+void store(CPU& cpu, Word addr, const InstructionArgs& args);
+void transfer(CPU& cpu, Word addr, const InstructionArgs& args);
+void transfer_without_flags(CPU& cpu, Word addr, const InstructionArgs& args);
+void push(CPU& cpu, Word addr, const InstructionArgs& args);
+void pla(CPU& cpu, Word addr, const InstructionArgs& args);
+void plp(CPU& cpu, Word addr, const InstructionArgs& args);
