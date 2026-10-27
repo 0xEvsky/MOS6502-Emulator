@@ -6,42 +6,61 @@ CPU::CPU()
     : PC(0), SP(0), A(0), X(0), Y(0), C(0), Z(0), I(0), D(0), B(0), V(0), N(0) {}
 
 Word CPU::getPC() const {return PC;}
-void CPU::setPC(Word value) {PC = value;}
 Word CPU::getSP() const {return SP;}
-void CPU::setSP(Byte value) {SP = 0x0100 + value;}
+Byte CPU::getSPByte() const {return static_cast<Byte>(SP);}
+Byte CPU::get_status_for_push() const {return get_status_flag(true);}
 Byte CPU::getA() const {return A;}
-void CPU::setA(Byte value) {A = value;}
 Byte CPU::getX() const {return X;}
-void CPU::setX(Byte value) {X = value;}
 Byte CPU::getY() const {return Y;}
+
+void CPU::setPC(Word value) {PC = value;}
+void CPU::setSP(Byte value) {SP = 0x0100 + value;}
+void CPU::setA(Byte value) {A = value;}
+void CPU::setX(Byte value) {X = value;}
 void CPU::setY(Byte value) {Y = value;}
 
-Byte CPU::getC() const {return C;}
-void CPU::setC() {C = !C;}
-Byte CPU::getZ() const {return Z;}
-void CPU::setZ() {Z = !Z;}
-Byte CPU::getI() const {return I;}
-void CPU::setI() {I = !I;}
-Byte CPU::getD() const {return D;}
-void CPU::setD() {D = !D;}
-Byte CPU::getB() const {return B;}
-void CPU::setB() {B = !B;}
-Byte CPU::getV() const {return V;}
-void CPU::setV() {V = !V;}
+Byte CPU::read_bit(Word data, int bit_index) {return ((data >> bit_index) & 1);}
+
+Byte CPU::get_status_flag(bool b_flag) const {return (getN() << 7) | (getV() << 6) | (1 << 5)
+                            | (b_flag << 4) | (getD() << 3) | (getI() << 2)
+                            | (getZ() << 1) | getC();}
+
+void CPU::set_status_flag(Byte data) {
+    setN(read_bit(data, 7));
+    setV(read_bit(data, 6));
+    setD(read_bit(data, 3));
+    setI(read_bit(data, 2));
+    setZ(read_bit(data, 1));
+    setC(read_bit(data, 0));
+}
+
 Byte CPU::getN() const {return N;}
-void CPU::setN() {N = !N;}
+Byte CPU::getV() const {return V;}
+Byte CPU::getD() const {return D;}
+Byte CPU::getB() const {return B;}
+Byte CPU::getI() const {return I;}
+Byte CPU::getZ() const {return Z;}
+Byte CPU::getC() const {return C;}
+
+void CPU::setN(Byte value) {N = value;}
+void CPU::setV(Byte value) {V = value;}
+void CPU::setD(Byte value) {D = value;}
+void CPU::setB(Byte value) {B = value;}
+void CPU::setI(Byte value) {I = value;}
+void CPU::setZ(Byte value) {Z = value;}
+void CPU::setC(Byte value) {C = value;}
 
 void CPU::reset()                             //method to mimic the resetting proccess
 {
     setPC(0xFFFC);
     setSP(0x0100);                      //the stack beings at 0x0100 in the memory
-    if (getC()) setC();
-    if (getZ()) setZ();
-    if (getI()) setI();
-    if (getD()) setD();
-    if (getB()) setB();
-    if (getV()) setV();
-    if (getN()) setN();
+    setC(0);
+    setZ(0);
+    setI(0);
+    setD(0);
+    setB(0);
+    setV(0);
+    setN(0);
     setA(0x00);
     setX(0x00);
     setY(0x00);
@@ -53,11 +72,24 @@ void CPU::mem_write(Word addr, Byte data) {mem.write(addr, data);}
 Byte CPU::stack_read() {return mem_read(getSP());}
 void CPU::stack_write(Byte data) {mem_write(getSP(), data);}
 
+void CPU::stack_push(Byte data) {
+    stack_write(data);
+    Word sp = getSP();
+    setSP(static_cast<Byte>(sp - 1));
+}
+
+Byte CPU::stack_pull() {
+    Word sp = getSP();
+    setSP(static_cast<Byte>(sp + 1));
+    return stack_read();
+}
+
 Byte CPU::fetch_byte() {
     Word addr = getPC();
     setPC(addr + 1);
     return mem_read(addr);
 }
+
 Word CPU::fetch_word() {
     Byte low = fetch_byte();
     Word high = fetch_byte();
@@ -113,55 +145,61 @@ const Instruction& CPU::decode(Byte opcode) {
     static const std::array<Instruction, 256> instruction_table = []{
         std::array<Instruction, 256> table{};
         // LDA
-        table[0xA9] = {lda, Mode::Immediate};
-        table[0xA5] = {lda, Mode::ZeroPage};
-        table[0xB5] = {lda, Mode::ZeroPageX};
-        table[0xAD] = {lda, Mode::Absolute};
-        table[0xBD] = {lda, Mode::AbsoluteX};
-        table[0xB9] = {lda, Mode::AbsoluteY};
-        table[0xA1] = {lda, Mode::IndirectPreX};
-        table[0xB1] = {lda, Mode::IndirectPostY};
+        table[0xA9] = {load, Mode::Immediate, {nullptr, &CPU::setA}};
+        table[0xA5] = {load, Mode::ZeroPage, {nullptr, &CPU::setA}};
+        table[0xB5] = {load, Mode::ZeroPageX, {nullptr, &CPU::setA}};
+        table[0xAD] = {load, Mode::Absolute, {nullptr, &CPU::setA}};
+        table[0xBD] = {load, Mode::AbsoluteX, {nullptr, &CPU::setA}};
+        table[0xB9] = {load, Mode::AbsoluteY, {nullptr, &CPU::setA}};
+        table[0xA1] = {load, Mode::IndirectPreX, {nullptr, &CPU::setA}};
+        table[0xB1] = {load, Mode::IndirectPostY, {nullptr, &CPU::setA}};
 
-        //ldx
-        table[0xA2] = {ldx, Mode::Immediate};
-        table[0xA6] = {ldx, Mode::ZeroPage};
-        table[0xB6] = {ldx, Mode::ZeroPageY};
-        table[0xAE] = {ldx, Mode::Absolute};
-        table[0xBE] = {ldx, Mode::AbsoluteY};
+        // LDX
+        table[0xA2] = {load, Mode::Immediate, {nullptr, &CPU::setX}};
+        table[0xA6] = {load, Mode::ZeroPage, {nullptr, &CPU::setX}};
+        table[0xB6] = {load, Mode::ZeroPageY, {nullptr, &CPU::setX}};
+        table[0xAE] = {load, Mode::Absolute, {nullptr, &CPU::setX}};
+        table[0xBE] = {load, Mode::AbsoluteY, {nullptr, &CPU::setX}};
 
-        //ldy
-        table[0xA0] = {ldy, Mode::Immediate};
-        table[0xA4] = {ldy, Mode::ZeroPage};
-        table[0xB4] = {ldy, Mode::ZeroPageX};
-        table[0xAC] = {ldy, Mode::Absolute};
-        table[0xBC] = {ldy, Mode::AbsoluteX};
+        // LDY
+        table[0xA0] = {load, Mode::Immediate, {nullptr, &CPU::setY}};
+        table[0xA4] = {load, Mode::ZeroPage, {nullptr, &CPU::setY}};
+        table[0xB4] = {load, Mode::ZeroPageX, {nullptr, &CPU::setY}};
+        table[0xAC] = {load, Mode::Absolute, {nullptr, &CPU::setY}};
+        table[0xBC] = {load, Mode::AbsoluteX, {nullptr, &CPU::setY}};
 
         // STA
-        table[0x85] = {sta, Mode::ZeroPage};
-        table[0x95] = {sta, Mode::ZeroPageX};
-        table[0x8D] = {sta, Mode::Absolute};
-        table[0x9D] = {sta, Mode::AbsoluteX};
-        table[0x99] = {sta, Mode::AbsoluteY};
-        table[0x81] = {sta, Mode::IndirectPreX};
-        table[0x91] = {sta, Mode::IndirectPostY};
+        table[0x85] = {store, Mode::ZeroPage, {&CPU::getA, nullptr}};
+        table[0x95] = {store, Mode::ZeroPageX, {&CPU::getA, nullptr}};
+        table[0x8D] = {store, Mode::Absolute, {&CPU::getA, nullptr}};
+        table[0x9D] = {store, Mode::AbsoluteX, {&CPU::getA, nullptr}};
+        table[0x99] = {store, Mode::AbsoluteY, {&CPU::getA, nullptr}};
+        table[0x81] = {store, Mode::IndirectPreX, {&CPU::getA, nullptr}};
+        table[0x91] = {store, Mode::IndirectPostY, {&CPU::getA, nullptr}};
 
         // STX
-        table[0x86] = {stx, Mode::ZeroPage};
-        table[0x96] = {stx, Mode::ZeroPageY};
-        table[0x8E] = {stx, Mode::Absolute};
+        table[0x86] = {store, Mode::ZeroPage, {&CPU::getX, nullptr}};
+        table[0x96] = {store, Mode::ZeroPageY, {&CPU::getX, nullptr}};
+        table[0x8E] = {store, Mode::Absolute, {&CPU::getX, nullptr}};
 
         // STY
-        table[0x84] = {sty, Mode::ZeroPage};
-        table[0x94] = {sty, Mode::ZeroPageX};
-        table[0x8C] = {sty, Mode::Absolute};
+        table[0x84] = {store, Mode::ZeroPage, {&CPU::getY, nullptr}};
+        table[0x94] = {store, Mode::ZeroPageX, {&CPU::getY, nullptr}};
+        table[0x8C] = {store, Mode::Absolute, {&CPU::getY, nullptr}};
 
-        // T--
-        table[0xAA] = {tax, Mode::Implied};
-        table[0xA8] = {tay, Mode::Implied};
-        table[0xBA] = {tsx, Mode::Implied};
-        table[0x8A] = {txa, Mode::Implied};
-        table[0x9A] = {txs, Mode::Implied};
-        table[0x98] = {tya, Mode::Implied};
+        // Transfers
+        table[0xAA] = {transfer, Mode::Implied, {&CPU::getA, &CPU::setX}};
+        table[0xA8] = {transfer, Mode::Implied, {&CPU::getA, &CPU::setY}};
+        table[0xBA] = {transfer, Mode::Implied, {&CPU::getSPByte, &CPU::setX}};
+        table[0x8A] = {transfer, Mode::Implied, {&CPU::getX, &CPU::setA}};
+        table[0x9A] = {transfer_without_flags, Mode::Implied, {&CPU::getX, &CPU::setSP}};
+        table[0x98] = {transfer, Mode::Implied, {&CPU::getY, &CPU::setA}};
+
+        // Stack operations
+        table[0x48] = {push, Mode::Implied, {&CPU::getA, nullptr}};
+        table[0x08] = {push, Mode::Implied, {&CPU::get_status_for_push, nullptr}};
+        table[0x68] = {pla, Mode::Implied, {nullptr, &CPU::setA}};
+        table[0x28] = {plp, Mode::Implied, {nullptr, &CPU::set_status_flag}};
         return table;
     }();
     return instruction_table[opcode];
@@ -171,5 +209,5 @@ void CPU::execute(Byte opcode) {
     Instruction ins = decode(opcode);
     if (!ins.op) return; // unused opcode
     Word addr = resolve_addr(ins.mode);
-    ins.op(*this, addr);
+    ins.op(*this, addr, ins.args);
 }
