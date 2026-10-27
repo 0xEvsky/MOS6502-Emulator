@@ -28,13 +28,13 @@ TEST_F(CPUTest, AccessorsUpdateRegistersAndFlags) {
     cpu.setA(0x01);
     cpu.setX(0x02);
     cpu.setY(0x03);
-    cpu.setC();
-    cpu.setZ();
-    cpu.setI();
-    cpu.setD();
-    cpu.setB();
-    cpu.setV();
-    cpu.setN();
+    cpu.setC(1);
+    cpu.setZ(1);
+    cpu.setI(1);
+    cpu.setD(1);
+    cpu.setB(1);
+    cpu.setV(1);
+    cpu.setN(1);
 
     EXPECT_EQ(cpu.getPC(), 0x1234);
     EXPECT_EQ(cpu.getSP(), 0x0178);
@@ -49,13 +49,13 @@ TEST_F(CPUTest, AccessorsUpdateRegistersAndFlags) {
     EXPECT_EQ(cpu.getV(), 1);
     EXPECT_EQ(cpu.getN(), 1);
 
-    cpu.setC();
-    cpu.setZ();
-    cpu.setI();
-    cpu.setD();
-    cpu.setB();
-    cpu.setV();
-    cpu.setN();
+    cpu.setC(0);
+    cpu.setZ(0);
+    cpu.setI(0);
+    cpu.setD(0);
+    cpu.setB(0);
+    cpu.setV(0);
+    cpu.setN(0);
 
     EXPECT_EQ(cpu.getC(), 0);
     EXPECT_EQ(cpu.getZ(), 0);
